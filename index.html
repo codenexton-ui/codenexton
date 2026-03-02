@@ -6,6 +6,25 @@
     <title>CodeNextOn | Soluções Digitais de Elite</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/styles.css">
+    <style>
+        /* Adicionando o estilo do botão outline que não estava no seu CSS original */
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+            margin-left: 10px;
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        /* Ajuste para alinhar os botões na nav */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>
 </head>
 <body>
 
@@ -15,7 +34,10 @@
 
     <nav>
         <div class="logo">CodeNextOn</div>
-        <a href="https://wa.me/5511976363840" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">Contato</a>
+        <div class="nav-right">
+            <a href="pages/sobre.html" style="color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Sobre</a>
+            <a href="https://wa.me/5511976363840" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">Contato</a>
+        </div>
     </nav>
 
     <header class="hero">
@@ -24,6 +46,7 @@
             <p>Especialistas em desenvolvimento de alta performance, automações inteligentes e interfaces que convertem.</p>
             <div class="hero-btns">
                 <a href="#servicos" class="btn btn-primary">Ver Nossas Soluções</a>
+                <a href="sobre.html" class="btn btn-outline">Quem Somos</a>
             </div>
         </div>
     </header>
@@ -34,22 +57,24 @@
             <p>Tecnologia sob medida para cada desafio.</p>
         </div>
         <div class="grid-services">
-            <div class="card">
-                <img src="https://img.icons8.com/external-thought-out-line-alvaro-cabrera/64/00d2ff/external-development-coding-thought-out-line-alvaro-cabrera.png"/>
-                <h3>Websites Premium</h3>
-                <p>Sites institucionais e landing pages focadas em SEO e velocidade máxima.</p>
-            </div>
-            <div class="card">
-                <img src="https://img.icons8.com/external-outline-juicy-fish/64/00d2ff/external-cloud-computing-digital-nomad-outline-juicy-fish.png"/>
-                <h3>Sistemas Web</h3>
-                <p>Aplicações complexas para gestão e automação de processos internos.</p>
-            </div>
-            <div class="card">
-                <img src="https://img.icons8.com/ios/64/00d2ff/source-code.png"/>
-                <h3>Scripts Customizados</h3>
-                <p>Automação de tarefas, integração de APIs e ferramentas para marketing digital.</p>
-            </div>
-        </div>
+    <div class="card">
+        <img src="https://img.icons8.com/ios/64/00d2ff/laptop-coding.png" alt="Websites Premium"/>
+        <h3>Websites Premium</h3>
+        <p>Sites institucionais e landing pages focadas em SEO e velocidade máxima.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/ios/64/00d2ff/data-configuration.png" alt="Sistemas Web"/>
+        <h3>Sistemas Web</h3>
+        <p>Aplicações complexas para gestão e automação de processos internos.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/ios/64/00d2ff/source-code.png" alt="Scripts Customizados"/>
+        <h3>Scripts Customizados</h3>
+        <p>Automação de tarefas, integração de APIs e ferramentas para marketing digital.</p>
+    </div>
+</div>
     </section>
 
     <section>
@@ -68,9 +93,9 @@
             <p>codenexton9@gmail.com</p>
             <p>(11) 976363840</p>
         </div>
+        <p style="margin-bottom: 15px;"><a href="sobre.html" style="color: var(--text-muted); text-decoration: none;">Conheça nossa história</a></p>
         <p style="font-size: 0.8rem; color: #444;">© 2026 CodeNextOn. Todos os direitos reservados.</p>
     </footer>
 
 </body>
-
 </html>
