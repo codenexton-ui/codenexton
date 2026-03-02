@@ -168,3 +168,20 @@
             section { padding: 60px 5%; }
             .hero-content h1 { font-size: 2.5rem; }
         }
+        /* Adicionando o estilo do botão outline que não estava no seu CSS original */
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+            margin-left: 10px;
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        /* Ajuste para alinhar os botões na nav */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }

@@ -1,0 +1,166 @@
+:root {
+            --primary: #00d2ff;
+            --secondary: #0072ff;
+            --bg-dark: #0a0f18;
+            --card-bg: #161d2a;
+            --text-light: #f8f9fa;
+            --text-muted: #a0aec0;
+            --accent: #25d366;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* -------- Navegação -------- */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 15, 24, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* -------- Hero Sobre -------- */
+        .about-hero {
+            padding: 180px 10% 100px;
+            background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.1), transparent);
+            text-align: center;
+        }
+
+        .about-hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+        }
+
+        .about-hero span {
+            color: var(--primary);
+        }
+
+        /* -------- Seção História & Missão -------- */
+        .content-section {
+            padding: 80px 10%;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .content-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .content-text h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .content-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .content-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+        }
+
+        .content-image img {
+            width: 100%;
+            display: block;
+            filter: grayscale(30%) contrast(1.1);
+        }
+
+        /* -------- Grid de Diferenciais -------- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border-bottom: 3px solid var(--secondary);
+        }
+
+        .stat-item h4 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        /* -------- CTA Final -------- */
+        .cta-footer {
+            margin: 100px 10%;
+            padding: 60px;
+            background: linear-gradient(135deg, #161d2a 0%, #05080d 100%);
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            padding: 50px 10%;
+            background: #05080d;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .content-section { flex-direction: column; text-align: center; }
+        }

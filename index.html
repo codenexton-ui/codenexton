@@ -6,29 +6,10 @@
     <title>CodeNextOn | Soluções Digitais de Elite</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/styles.css">
-    <style>
-        /* Adicionando o estilo do botão outline que não estava no seu CSS original */
-        .btn-outline {
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            background: transparent;
-            margin-left: 10px;
-        }
-        .btn-outline:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-        /* Ajuste para alinhar os botões na nav */
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-    </style>
 </head>
 <body>
 
-    <a href="https://wa.me/5511976363840" class="whatsapp-float" target="_blank">
+    <a href="#" class="whatsapp-float btn-whats-random">
         <img src="https://img.icons8.com/color/40/ffffff/whatsapp.png" alt="WhatsApp">
     </a>
 
@@ -36,7 +17,7 @@
         <div class="logo">CodeNextOn</div>
         <div class="nav-right">
             <a href="pages/sobre.html" style="color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Sobre</a>
-            <a href="https://wa.me/5511976363840" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">Contato</a>
+            <a href="#" class="btn btn-primary btn-whats-random" style="padding: 10px 20px; font-size: 0.9rem;">Contato</a>
         </div>
     </nav>
 
@@ -46,7 +27,7 @@
             <p>Especialistas em desenvolvimento de alta performance, automações inteligentes e interfaces que convertem.</p>
             <div class="hero-btns">
                 <a href="#servicos" class="btn btn-primary">Ver Nossas Soluções</a>
-                <a href="sobre.html" class="btn btn-outline">Quem Somos</a>
+                <a href="pages/sobre.html" class="btn btn-outline">Quem Somos</a>
             </div>
         </div>
     </header>
@@ -57,31 +38,29 @@
             <p>Tecnologia sob medida para cada desafio.</p>
         </div>
         <div class="grid-services">
-    <div class="card">
-        <img src="https://img.icons8.com/ios/64/00d2ff/laptop-coding.png" alt="Websites Premium"/>
-        <h3>Websites Premium</h3>
-        <p>Sites institucionais e landing pages focadas em SEO e velocidade máxima.</p>
-    </div>
-
-    <div class="card">
-        <img src="https://img.icons8.com/ios/64/00d2ff/data-configuration.png" alt="Sistemas Web"/>
-        <h3>Sistemas Web</h3>
-        <p>Aplicações complexas para gestão e automação de processos internos.</p>
-    </div>
-
-    <div class="card">
-        <img src="https://img.icons8.com/ios/64/00d2ff/source-code.png" alt="Scripts Customizados"/>
-        <h3>Scripts Customizados</h3>
-        <p>Automação de tarefas, integração de APIs e ferramentas para marketing digital.</p>
-    </div>
-</div>
+            <div class="card">
+                <img src="https://img.icons8.com/ios/64/00d2ff/laptop-coding.png" alt="Websites Premium"/>
+                <h3>Websites Premium</h3>
+                <p>Sites institucionais e landing pages focadas em SEO e velocidade máxima.</p>
+            </div>
+            <div class="card">
+                <img src="https://img.icons8.com/ios/64/00d2ff/data-configuration.png" alt="Sistemas Web"/>
+                <h3>Sistemas Web</h3>
+                <p>Aplicações complexas para gestão e automação de processos internos.</p>
+            </div>
+            <div class="card">
+                <img src="https://img.icons8.com/ios/64/00d2ff/source-code.png" alt="Scripts Customizados"/>
+                <h3>Scripts Customizados</h3>
+                <p>Automação de tarefas, integração de APIs e ferramentas para marketing digital.</p>
+            </div>
+        </div>
     </section>
 
     <section>
         <div class="cta-box">
             <h2>Inicie seu projeto com a CodeNextOn</h2>
             <p style="margin-bottom: 30px; color: #ddd;">Estamos prontos para transformar sua visão em código de alta qualidade.</p>
-            <a href="https://wa.me/5511976363840?text=Olá! Gostaria de um orçamento para meu projeto." class="btn btn-primary" style="background: #25d366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
+            <a href="#" class="btn btn-primary btn-whats-random" data-msge="Olá! Gostaria de um orçamento para meu projeto." style="background: #25d366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
                 Falar Consultoria Via WhatsApp
             </a>
         </div>
@@ -96,6 +75,35 @@
         <p style="margin-bottom: 15px;"><a href="sobre.html" style="color: var(--text-muted); text-decoration: none;">Conheça nossa história</a></p>
         <p style="font-size: 0.8rem; color: #444;">© 2026 CodeNextOn. Todos os direitos reservados.</p>
     </footer>
+
+    <script>
+        (function() {
+            // Os números configurados
+            const numeros = ["5511976363840", "5511948887050"];
+            
+            // Seleciona todos os botões que tenham a classe 'btn-whats-random'
+            const links = document.querySelectorAll('.btn-whats-random');
+
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Para não recarregar a página
+                    
+                    // Sorteio puro: Math.random() gera entre 0 e 0.99... 
+                    // Com 2 números, se for < 0.5 vai pro primeiro, se for > 0.5 vai pro segundo.
+                    const sorteado = numeros[Math.floor(Math.random() * numeros.length)];
+                    
+                    // Verifica se o botão tem uma mensagem específica no atributo 'data-msge'
+                    const msgeBase = this.getAttribute('data-msge') || "Olá! Vim pelo site.";
+                    const texto = encodeURIComponent(msgeBase);
+
+                    const urlFinal = `https://wa.me/${sorteado}?text=${texto}`;
+                    
+                    // Abre o link sorteado
+                    window.open(urlFinal, '_blank');
+                });
+            });
+        })();
+    </script>
 
 </body>
 </html>
