@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio | CodeNextOn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0072ff;
+            --bg-dark: #0a0f18;
+            --card-bg: #161d2a;
+            --text-light: #f8f9fa;
+            --text-muted: #a0aec0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 15, 24, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        header.portfolio-header {
+            padding: 100px 5% 50px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        header span { color: var(--primary); }
+
+        /* Grid de Projetos */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            padding: 50px 10%;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .project-thumb {
+            width: 100%;
+            height: 220px;
+            background: #2a3447;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-thumb iframe {
+            width: 1280px; /* Simula desktop */
+            height: 800px;
+            transform: scale(0.28); /* Miniatura do site real */
+            transform-origin: 0 0;
+            border: none;
+            pointer-events: none; /* Não permite scroll dentro do card */
+        }
+
+        /* Overlay para o iframe */
+        .thumb-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0);
+            z-index: 2;
+        }
+
+        .project-info {
+            padding: 25px;
+        }
+
+        .project-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .project-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-view {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-view:hover {
+            gap: 15px;
+        }
+
+        footer {
+            padding: 60px 10%;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">CodeNextOn</a>
+        <div class="nav-right">
+            <a href="index.html" style="color: var(--text-light); text-decoration: none; font-size: 0.9rem;">Voltar ao Início</a>
+        </div>
+    </nav>
+
+    <header class="portfolio-header">
+        <h1>Nosso <span>Portfólio</span></h1>
+        <p style="color: var(--text-muted);">Projetos reais desenvolvidos com foco em performance e design.</p>
+    </header>
+
+    <main class="portfolio-grid" id="portfolio-container"></main>
+
+    <footer>
+        <p>© 2026 CodeNextOn. Transformando ideias em sistemas de alto nível.</p>
+    </footer>
+
+    <script>
+        // --- CONFIGURAÇÃO DOS PROJETOS ---
+        // Adicione aqui as pastas dos seus sites que estão no mesmo servidor
+        const projetos = [
+            {
+                titulo: "Landing Page Imobiliária",
+                descricao: "Design moderno com foco em conversão de leads e alta performance.",
+                caminho: "sites/projeto1/index.html" // Caminho para o site na sua pasta
+            },
+            {
+                titulo: "Dashboard Admin",
+                descricao: "Sistema de gestão interna com gráficos em tempo real e controle de usuários.",
+                caminho: "sites/projeto2/index.html"
+            },
+            {
+                titulo: "E-commerce Tech",
+                descricao: "Loja virtual completa com integração de pagamentos e SEO otimizado.",
+                caminho: "sites/projeto3/index.html"
+            }
+        ];
+
+        const container = document.getElementById('portfolio-container');
+
+        // Função para criar os cards dinamicamente
+        projetos.forEach(projeto => {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+
+            card.innerHTML = `
+                <div class="project-thumb">
+                    <div class="thumb-overlay"></div>
+                    <iframe src="${projeto.caminho}" scrolling="no"></iframe>
+                </div>
+                <div class="project-info">
+                    <h3>${projeto.titulo}</h3>
+                    <p>${projeto.descricao}</p>
+                    <a href="${projeto.caminho}" target="_blank" class="btn-view">
+                        Visualizar Projeto Completo ➔
+                    </a>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
