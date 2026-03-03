@@ -1,241 +1,322 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" x-data="setup()" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Admin | Mobile Ready</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Nexus ERP | Admin Dashboard</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .sidebar-transition { transition: transform 0.3s ease-in-out; }
-        @media (max-width: 768px) {
-            .sidebar-closed { transform: translateX(-100%); }
-            .sidebar-open { transform: translateX(0); }
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' }
+                    }
+                }
+            }
         }
+    </script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        .chart-container { position: relative; height: 250px; width: 100%; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex overflow-hidden">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-300">
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden backdrop-blur-sm"></div>
-
-    <aside id="sidebar" class="fixed md:relative w-64 h-full bg-gray-800 border-r border-gray-700 flex flex-col z-30 sidebar-transition sidebar-closed md:transform-none">
-        <div class="p-6 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2 rounded-lg"><i data-lucide="layers" class="text-white w-5 h-5"></i></div>
-                <span class="text-xl font-bold tracking-tight text-white">NEXUS<span class="text-blue-500">ERP</span></span>
-            </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-        </div>
-
-        <nav class="flex-1 px-4 space-y-2 mt-4">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 p-3 rounded-lg bg-blue-600 text-white transition-all">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
-            </button>
-            <button onclick="switchTab('users')" id="nav-users" class="w-full flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-all">
-                <i data-lucide="users" class="w-5 h-5"></i> Usuários
-            </button>
-            <button onclick="switchTab('reports')" id="nav-reports" class="w-full flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-all">
-                <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Relatórios
-            </button>
-        </nav>
-
-        <div class="p-4 border-t border-gray-700">
-            <div class="flex items-center gap-3 p-2 bg-gray-700/50 rounded-xl">
-                <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff" class="w-8 h-8 rounded-full" alt="Avatar">
-                <div class="truncate">
-                    <p class="text-xs font-semibold">Admin Principal</p>
-                    <p class="text-[10px] text-gray-400">admin@nexus.com</p>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4 md:px-8 shrink-0">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-700 rounded-lg md:hidden">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
-                <div class="relative hidden sm:block">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-4 h-4"></i>
-                    <input type="text" placeholder="Buscar..." class="bg-gray-900 border border-gray-700 rounded-lg py-1.5 pl-10 pr-4 focus:outline-none focus:border-blue-500 text-sm w-48 lg:w-64">
-                </div>
-            </div>
+    <div class="flex h-screen overflow-hidden">
+        
+        <aside class="fixed inset-y-0 z-50 flex flex-col w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transition-transform duration-300 transform lg:translate-x-0 lg:static lg:inset-0"
+               :class="{ '-translate-x-full': !sidebarOpen }">
             
-            <div class="flex items-center gap-3 md:gap-6">
-                <button onclick="toggleModal(true)" class="bg-blue-600 hover:bg-blue-700 text-white p-2 md:px-4 md:py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    <span class="hidden md:inline">Novo</span>
-                </button>
-                <button class="relative text-gray-400 hover:text-white">
-                    <i data-lucide="bell" class="w-5 h-5"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center">3</span>
+            <div class="flex items-center justify-between h-16 px-6 border-b border-slate-100 dark:border-slate-700">
+                <span class="text-xl font-bold text-brand-600 dark:text-brand-500">Nexus<span class="text-slate-800 dark:text-white">ERP</span></span>
+                <button @click="sidebarOpen = false" class="lg:hidden">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-        </header>
 
-        <div class="flex-1 overflow-y-auto p-4 md:p-8">
-            <div id="content-area" class="max-w-7xl mx-auto">
+            <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+                <template x-for="item in menuItems">
+                    <a @click="currentTab = item.id; if(window.innerWidth < 1024) sidebarOpen = false"
+                       :class="currentTab === item.id ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'"
+                       class="flex items-center px-4 py-3 text-sm font-medium rounded-lg cursor-pointer transition-all group">
+                        <i :data-lucide="item.icon" class="w-5 h-5 mr-3"></i>
+                        <span x-text="item.label"></span>
+                    </a>
+                </template>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700">
+                <button @click="darkMode = !darkMode" class="flex items-center w-full px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
+                    <i :data-lucide="darkMode ? 'sun' : 'moon'" class="w-5 h-5 mr-3"></i>
+                    <span x-text="darkMode ? 'Modo Claro' : 'Modo Escuro'"></span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col overflow-hidden">
+            
+            <header class="flex items-center justify-between h-16 px-6 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center">
+                    <button @click="sidebarOpen = true" class="text-slate-500 lg:hidden focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h2 class="ml-4 text-lg font-semibold capitalize" x-text="currentTab"></h2>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="relative p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full">
+                            <i data-lucide="bell" class="w-6 h-6"></i>
+                            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-slate-800"></span>
+                        </button>
+                        <div x-show="open" @click.away="open = false" x-cloak class="absolute right-0 w-64 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-50">
+                            <div class="p-3 text-sm font-semibold border-b border-slate-100 dark:border-slate-700">Notificações</div>
+                            <div class="p-4 text-xs text-slate-500 text-center">Nenhum alerta crítico no momento.</div>
+                        </div>
+                    </div>
+                    <div class="h-8 w-8 rounded-full bg-brand-500 flex items-center justify-center text-white font-bold">JD</div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-900">
                 
-                <section id="view-dashboard" class="space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <h1 class="text-2xl font-bold">Dashboard</h1>
-                        <span class="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full border border-gray-700">Sync: <span id="last-update">...</span></span>
+                <div x-show="currentTab === 'dashboard'" x-transition>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <template x-for="kpi in kpis">
+                            <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="p-2 rounded-lg" :class="kpi.color">
+                                        <i :data-lucide="kpi.icon" class="w-6 h-6 text-white"></i>
+                                    </div>
+                                    <span class="text-green-500 text-sm font-medium">+12% ↑</span>
+                                </div>
+                                <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium" x-text="kpi.label"></h3>
+                                <p class="text-2xl font-bold mt-1" x-text="kpi.value"></p>
+                            </div>
+                        </template>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Receita</p>
-                            <div class="flex items-baseline justify-between mt-2">
-                                <h2 class="text-2xl font-bold" id="kpi-revenue">R$ 0</h2>
-                                <span class="text-green-500 text-xs font-bold">+12%</span>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <h3 class="text-lg font-bold mb-4">Vendas Semanais</h3>
+                            <div class="chart-container">
+                                <canvas id="salesChart"></canvas>
                             </div>
                         </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Usuários</p>
-                            <div class="flex items-baseline justify-between mt-2">
-                                <h2 class="text-2xl font-bold" id="kpi-users">0</h2>
-                                <span class="text-green-500 text-xs font-bold">+5%</span>
-                            </div>
-                        </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 lg:col-span-1">
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Conversão</p>
-                            <div class="flex items-baseline justify-between mt-2">
-                                <h2 class="text-2xl font-bold">3.4%</h2>
-                                <span class="text-red-400 text-xs font-bold">-2%</span>
-                            </div>
-                        </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 lg:col-span-1">
-                            <p class="text-gray-400 text-xs font-medium uppercase tracking-wider">Alertas</p>
-                            <div class="flex items-baseline justify-between mt-2">
-                                <h2 class="text-2xl font-bold text-yellow-500">7</h2>
-                                <i data-lucide="alert-circle" class="w-4 h-4 text-yellow-500"></i>
+                        <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <h3 class="text-lg font-bold mb-4">Mix de Produtos</h3>
+                            <div class="chart-container">
+                                <canvas id="productChart"></canvas>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-gray-800 p-6 rounded-xl border border-gray-700 min-h-[350px]">
-                            <h3 class="text-sm font-semibold mb-4 text-gray-300">Performance de Vendas</h3>
-                            <div class="h-64"><canvas id="lineChart"></canvas></div>
+                <div x-show="currentTab === 'usuarios'" x-transition>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                        <div class="relative flex-1 max-w-md">
+                            <i data-lucide="search" class="absolute left-3 top-2.5 w-5 h-5 text-slate-400"></i>
+                            <input type="text" x-model="searchQuery" placeholder="Buscar usuários por nome ou e-mail..." 
+                                   class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none">
                         </div>
-                        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 min-h-[350px]">
-                            <h3 class="text-sm font-semibold mb-4 text-gray-300">Setores</h3>
-                            <div class="h-64"><canvas id="barChart"></canvas></div>
-                        </div>
+                        <button @click="userModal = true" class="flex items-center justify-center px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium transition-colors">
+                            <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Novo Usuário
+                        </button>
                     </div>
-                </section>
 
-                <section id="view-users" class="hidden space-y-6">
-                    <h1 class="text-2xl font-bold">Usuários</h1>
-                    <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-x-auto">
-                        <table class="w-full text-left min-w-[600px]">
-                            <thead class="bg-gray-900/50 text-gray-400 text-xs uppercase">
-                                <tr>
-                                    <th class="p-4">Usuário</th>
-                                    <th class="p-4">Status</th>
-                                    <th class="p-4 text-right">Ações</th>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700">
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Usuário</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Acesso</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-700 text-sm">
-                                <tr class="hover:bg-gray-700/30 transition-colors">
-                                    <td class="p-4 flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold">JS</div>
-                                        <div>
-                                            <p class="font-medium">João Silva</p>
-                                            <p class="text-xs text-gray-500">joao@nexus.com</p>
-                                        </div>
-                                    </td>
-                                    <td class="p-4"><span class="bg-green-500/10 text-green-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Ativo</span></td>
-                                    <td class="p-4 text-right">
-                                        <button class="text-gray-400 hover:text-white p-1"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
-                                    </td>
-                                </tr>
+                            <tbody>
+                                <template x-for="user in filteredUsers" :key="user.email">
+                                    <tr class="border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                                        <td class="px-6 py-4 flex items-center">
+                                            <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 mr-3 flex items-center justify-center font-bold text-slate-500" x-text="user.nome.charAt(0)"></div>
+                                            <div>
+                                                <div class="font-semibold" x-text="user.nome"></div>
+                                                <div class="text-xs text-slate-400" x-text="user.email"></div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400" x-text="user.role"></span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <div :class="user.online ? 'bg-green-500' : 'bg-slate-300'" class="w-2 h-2 rounded-full mr-2"></div>
+                                                <span class="text-sm" x-text="user.online ? 'Online' : 'Offline'"></span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button @click="deleteUser(user.email)" class="text-slate-400 hover:text-red-500 transition-colors">
+                                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
                             </tbody>
                         </table>
+                        
+                        <div x-show="filteredUsers.length === 0" class="p-12 text-center text-slate-500">
+                            <i data-lucide="users" class="w-12 h-12 mx-auto mb-4 opacity-20"></i>
+                            <p>Nenhum usuário encontrado para sua busca.</p>
+                        </div>
                     </div>
-                </section>
+                </div>
+
+                <div x-show="['vendas', 'configuracoes'].includes(currentTab)" class="flex flex-col items-center justify-center h-64 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl">
+                    <p class="text-slate-400 italic">Módulo de <span x-text="currentTab"></span> em desenvolvimento...</p>
+                </div>
+
             </div>
-        </div>
+        </main>
     </div>
 
-    <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-gray-800 w-full max-w-sm rounded-xl border border-gray-700 p-6 shadow-2xl">
-            <h3 class="text-lg font-bold mb-4">Adicionar Item</h3>
-            <input type="text" placeholder="Nome do Registro" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 mb-4 text-sm focus:border-blue-500 outline-none">
-            <div class="flex gap-3">
-                <button onclick="toggleModal(false)" class="flex-1 py-2 text-sm bg-gray-700 rounded-lg">Voltar</button>
-                <button class="flex-1 py-2 text-sm bg-blue-600 rounded-lg font-bold">Criar</button>
-            </div>
+    <div x-show="userModal" x-cloak class="fixed inset-0 z-[60] flex items-center justify-center px-4 overflow-hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="userModal = false"></div>
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md p-8 rounded-2xl shadow-2xl relative z-10" @click.stop x-transition>
+            <h3 class="text-xl font-bold mb-6">Novo Usuário</h3>
+            <form @submit.prevent="addUser()">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nome Completo</label>
+                        <input type="text" x-model="newUser.nome" required class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">E-mail</label>
+                        <input type="email" x-model="newUser.email" required class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Nível de Acesso</label>
+                        <select x-model="newUser.role" class="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="Admin">Administrador</option>
+                            <option value="Editor">Editor</option>
+                            <option value="Viewer">Visualizador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-8 flex space-x-3">
+                    <button type="button" @click="userModal = false" class="flex-1 py-2 text-slate-500 font-medium border border-slate-200 dark:border-slate-700 rounded-lg">Cancelar</button>
+                    <button type="submit" class="flex-1 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors">Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        lucide.createIcons();
-
-        // LÓGICA DO TOGGLE SIDEBAR
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            
-            sidebar.classList.toggle('sidebar-closed');
-            sidebar.classList.toggle('sidebar-open');
-            overlay.classList.toggle('hidden');
-        }
-
-        // LÓGICA DAS ABAS
-        function switchTab(tab) {
-            ['dashboard', 'users', 'reports'].forEach(t => {
-                const section = document.getElementById(`view-${t}`);
-                if (section) section.classList.add('hidden');
+        function setup() {
+            return {
+                currentTab: 'dashboard',
+                sidebarOpen: false,
+                darkMode: localStorage.getItem('darkMode') === 'true',
+                userModal: false,
+                searchQuery: '',
                 
-                const btn = document.getElementById(`nav-${t}`);
-                if (btn) {
-                    btn.classList.remove('bg-blue-600', 'text-white');
-                    btn.classList.add('text-gray-400');
+                menuItems: [
+                    { id: 'dashboard', label: 'Dashboard', icon: 'layout-dashboard' },
+                    { id: 'usuarios', label: 'Usuários', icon: 'users' },
+                    { id: 'vendas', label: 'Vendas', icon: 'shopping-bag' },
+                    { id: 'configuracoes', label: 'Configurações', icon: 'settings' }
+                ],
+
+                kpis: [
+                    { label: 'Faturamento Mensal', value: 'R$ 124.500', icon: 'dollar-sign', color: 'bg-emerald-500' },
+                    { label: 'Novos Clientes', value: '1,280', icon: 'user-plus', color: 'bg-brand-500' },
+                    { label: 'Pedidos Pendentes', value: '45', icon: 'clock', color: 'bg-amber-500' }
+                ],
+
+                users: [
+                    { nome: 'Ana Silva', email: 'ana@empresa.com', role: 'Admin', online: true },
+                    { nome: 'Carlos Souza', email: 'carlos@empresa.com', role: 'Editor', online: false },
+                    { nome: 'Mariana Oliveira', email: 'mariana@empresa.com', role: 'Viewer', online: true },
+                    { nome: 'Roberto Santos', email: 'roberto@empresa.com', role: 'Editor', online: true }
+                ],
+
+                newUser: { nome: '', email: '', role: 'Viewer' },
+
+                get filteredUsers() {
+                    if (this.searchQuery === '') return this.users;
+                    return this.users.filter(u => 
+                        u.nome.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                        u.email.toLowerCase().includes(this.searchQuery.toLowerCase())
+                    );
+                },
+
+                init() {
+                    this.$watch('darkMode', val => localStorage.setItem('darkMode', val));
+                    this.initCharts();
+                    lucide.createIcons();
+                    
+                    // Simulação em Tempo Real
+                    setInterval(() => {
+                        this.kpis[0].value = 'R$ ' + (Math.floor(Math.random() * 10000) + 120000).toLocaleString('pt-BR');
+                        this.kpis[2].value = Math.floor(Math.random() * 60) + 30;
+                    }, 10000);
+                },
+
+                initCharts() {
+                    const ctxSales = document.getElementById('salesChart').getContext('2d');
+                    new Chart(ctxSales, {
+                        type: 'line',
+                        data: {
+                            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+                            datasets: [{
+                                label: 'Vendas (R$)',
+                                data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
+                                borderColor: '#0ea5e9',
+                                tension: 0.4,
+                                fill: true,
+                                backgroundColor: 'rgba(14, 165, 233, 0.1)'
+                            }]
+                        },
+                        options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                    });
+
+                    const ctxProd = document.getElementById('productChart').getContext('2d');
+                    new Chart(ctxProd, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['SaaS', 'Serviços', 'Consultoria'],
+                            datasets: [{
+                                data: [55, 25, 20],
+                                backgroundColor: ['#0ea5e9', '#6366f1', '#f59e0b'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: { maintainAspectRatio: false, cutout: '70%' }
+                    });
+                },
+
+                addUser() {
+                    this.users.unshift({ ...this.newUser, online: true });
+                    this.newUser = { nome: '', email: '', role: 'Viewer' };
+                    this.userModal = false;
+                },
+
+                deleteUser(email) {
+                    this.users = this.users.filter(u => u.email !== email);
                 }
-            });
-
-            document.getElementById(`view-${tab}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`nav-${tab}`);
-            activeBtn.classList.add('bg-blue-600', 'text-white');
-            activeBtn.classList.remove('text-gray-400');
-
-            // No mobile, fecha a sidebar ao trocar de aba
-            if (window.innerWidth < 768) toggleSidebar();
+            }
         }
-
-        function toggleModal(s) { document.getElementById('modal').classList.toggle('hidden', !s); }
-
-        // CHARTS & DATA
-        const ctxL = document.getElementById('lineChart').getContext('2d');
-        const line = new Chart(ctxL, {
-            type: 'line',
-            data: { labels: ['00h', '04h', '08h', '12h', '16h', '20h'], datasets: [{ data: [10, 45, 30, 70, 60, 90], borderColor: '#3b82f6', tension: 0.4, borderWidth: 3, pointRadius: 0 }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { color: '#374151' } } } }
-        });
-
-        const ctxB = document.getElementById('barChart').getContext('2d');
-        new Chart(ctxB, {
-            type: 'doughnut',
-            data: { labels: ['SaaS', 'Ads', 'Consultoria'], datasets: [{ data: [300, 50, 100], backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981'], borderWidth: 0, hoverOffset: 4 }] },
-            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af', font: { size: 10 } } } } }
-        });
-
-        // UPDATE SIMULATOR
-        setInterval(() => {
-            document.getElementById('kpi-revenue').innerText = 'R$ ' + (Math.random() * 100000).toLocaleString('pt-BR', {maximumFractionDigits: 0});
-            document.getElementById('kpi-users').innerText = Math.floor(Math.random() * 5000);
-            document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
-            line.data.datasets[0].data.push(Math.random() * 100);
-            line.data.datasets[0].data.shift();
-            line.update('none');
-        }, 5000);
     </script>
 </body>
 </html>
