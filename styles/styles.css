@@ -174,10 +174,12 @@
             color: var(--primary);
             background: transparent;
             margin-left: 10px;
+            margin: 10px;
         }
         .btn-outline:hover {
             background: var(--primary);
             color: #fff;
+            margin: 10px;
         }
         /* Ajuste para alinhar os botões na nav */
         .nav-right {
