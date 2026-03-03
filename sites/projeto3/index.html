@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>TechStore | O Futuro do Hardware e Gadgets</title>
+    <meta name="description" content="Encontre os melhores teclados mecânicos, mouses gamers e hardware de ponta com entrega rápida e preços imbatíveis.">
+    <meta property="og:title" content="TechStore | Loja de Tecnologia">
+    <meta property="og:description" content="Sua vitrine premium para setups de alto desempenho.">
+    <meta property="og:type" content="website">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Store",
+      "name": "TechStore All-in-One",
+      "description": "Loja especializada em gadgets e hardware de alta performance.",
+      "image": "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=800&q=80"
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        .product-card:hover .btn-add { transform: translateY(0); opacity: 1; }
+        .drawer-open { transform: translateX(0) !important; }
+        .modal-active { display: flex !important; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold text-xl tracking-tighter cursor-pointer" onclick="showSection('home')">
+                <i data-lucide="cpu" class="text-blue-600"></i> TECH<span class="text-blue-600">STORE</span>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <input type="text" id="searchInput" placeholder="Buscar hardware..." class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                    <i data-lucide="search" class="absolute right-3 top-2.5 w-4 h-4 text-slate-400"></i>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleDarkMode()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+                    <i data-lucide="moon" id="theme-icon"></i>
+                </button>
+                <div class="relative cursor-pointer p-2" onclick="toggleCart(true)">
+                    <i data-lucide="shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <section id="home-section">
+            <div class="relative bg-slate-900 h-[400px] flex items-center overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80" class="absolute w-full h-full object-cover opacity-40" alt="Hero Background">
+                <div class="container mx-auto px-4 relative z-10">
+                    <h1 class="text-4xl md:text-6xl font-black text-white mb-4">Level Up Your <br><span class="text-blue-500">Workspace</span></h1>
+                    <p class="text-slate-300 mb-8 max-w-md">Equipamentos premium testados por especialistas para máxima performance.</p>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-lg shadow-blue-500/20">Ver Ofertas</button>
+                </div>
+            </div>
+
+            <div class="container mx-auto px-4 py-12">
+                <h2 class="text-2xl font-bold mb-8 flex items-center gap-2">
+                    <i data-lucide="zap" class="text-yellow-500 fill-yellow-500"></i> Lançamentos da Semana
+                </h2>
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </div>
+            </div>
+        </section>
+
+        <section id="checkout-section" class="hidden container mx-auto px-4 py-12">
+            <h2 class="text-3xl font-bold mb-8 text-center">Finalizar Pedido</h2>
+            <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xl font-semibold mb-6">Dados de Entrega</h3>
+                    <form id="checkoutForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" placeholder="Nome" required class="p-3 bg-slate-50 dark:bg-slate-900 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none border-slate-200 dark:border-slate-700">
+                            <input type="text" placeholder="Sobrenome" required class="p-3 bg-slate-50 dark:bg-slate-900 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none border-slate-200 dark:border-slate-700">
+                        </div>
+                        <input type="email" placeholder="E-mail" required class="w-full p-3 bg-slate-50 dark:bg-slate-900 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none border-slate-200 dark:border-slate-700">
+                        <input type="text" placeholder="Endereço Completo" required class="w-full p-3 bg-slate-50 dark:bg-slate-900 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none border-slate-200 dark:border-slate-700">
+                        
+                        <h3 class="text-xl font-semibold pt-6 mb-4">Pagamento</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="pix" checked class="hidden peer">
+                                <div class="p-4 border rounded-lg text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20">PIX</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="card" class="hidden peer">
+                                <div class="p-4 border rounded-lg text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20">Cartão</div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="payment" value="boleto" class="hidden peer">
+                                <div class="p-4 border rounded-lg text-center peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20">Boleto</div>
+                            </label>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl mt-8 transition-colors">
+                            Confirmar Pagamento
+                        </button>
+                    </form>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-800/50 p-8 rounded-2xl h-fit">
+                    <h3 class="text-xl font-semibold mb-6">Resumo</h3>
+                    <div id="checkout-summary" class="space-y-4 mb-6"></div>
+                    <div class="border-t border-slate-300 dark:border-slate-600 pt-4 flex justify-between text-xl font-bold">
+                        <span>Total:</span>
+                        <span id="checkout-total">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="cart-drawer" class="fixed inset-0 z-[60] invisible transition-all">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCart(false)"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h2 class="text-xl font-bold">Seu Carrinho</h2>
+                <button onclick="toggleCart(false)"><i data-lucide="x"></i></button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6">
+                </div>
+            <div class="p-6 border-t bg-slate-50 dark:bg-slate-800/50">
+                <div class="flex justify-between mb-4 text-lg font-bold">
+                    <span>Subtotal:</span>
+                    <span id="cart-total-value">R$ 0,00</span>
+                </div>
+                <button onclick="goToCheckout()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all">
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative p-6 md:p-12">
+            <button onclick="closeModal()" class="absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full">
+                <i data-lucide="x"></i>
+            </button>
+            <div id="modal-content" class="grid md:grid-cols-2 gap-12">
+                </div>
+        </div>
+    </div>
+
+    <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-12 mt-20">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center gap-6 mb-8 text-slate-400">
+                <i data-lucide="facebook"></i>
+                <i data-lucide="instagram"></i>
+                <i data-lucide="twitter"></i>
+            </div>
+            <p class="text-slate-500">© 2024 TechStore All-in-One. Protótipo para demonstração.</p>
+        </div>
+    </footer>
+
+    <script>
+        // DATA
+        const PRODUCTS = [
+            { id: 1, name: "Teclado Mecânico RGB Pro", price: 549.90, oldPrice: 699.00, tag: "Lançamento", img: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=500&q=80", specs: "Switch Blue, Layout ABNT2, Keycaps PBT" },
+            { id: 2, name: "Mouse Gamer 16k DPI", price: 299.00, oldPrice: 350.00, tag: "Oferta", img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=500&q=80", specs: "Sensor Óptico, 6 Botões Programáveis" },
+            { id: 3, name: "Headset Surround 7.1", price: 420.00, oldPrice: null, tag: "Novo", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80", specs: "Drivers de 50mm, Microfone Noise-Cancelling" },
+            { id: 4, name: "Monitor 144Hz IPS", price: 1290.00, oldPrice: 1599.00, tag: "Oferta", img: "https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?auto=format&fit=crop&w=500&q=80", specs: "1ms Response, HDR Ready, Full HD" },
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('techstore-cart')) || [];
+
+        // INITIALIZATION
+        function init() {
+            lucide.createIcons();
+            renderProducts(PRODUCTS);
+            updateCartUI();
+            
+            // Search Functionality
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(term));
+                renderProducts(filtered);
+            });
+        }
+
+        // NAVIGATION
+        function showSection(section) {
+            if(section === 'home') {
+                document.getElementById('home-section').classList.remove('hidden');
+                document.getElementById('checkout-section').classList.add('hidden');
+            } else {
+                document.getElementById('home-section').classList.add('hidden');
+                document.getElementById('checkout-section').classList.remove('hidden');
+            }
+            window.scrollTo(0,0);
+        }
+
+        // PRODUCT RENDERING
+        function renderProducts(items) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = items.map(product => `
+                <article class="product-card group bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all cursor-pointer overflow-hidden relative" onclick="openProduct(${product.id})">
+                    <div class="relative mb-4 overflow-hidden rounded-xl h-48">
+                        <img src="${product.img}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        ${product.tag ? `<span class="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">${product.tag}</span>` : ''}
+                    </div>
+                    <h3 class="font-bold text-lg mb-1 truncate">${product.name}</h3>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-blue-600 font-black">R$ ${product.price.toFixed(2)}</span>
+                        ${product.oldPrice ? `<span class="text-slate-400 line-through text-xs italic">R$ ${product.oldPrice.toFixed(2)}</span>` : ''}
+                    </div>
+                    <button onclick="event.stopPropagation(); addToCart(${product.id})" class="w-full py-2 bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white rounded-lg font-semibold hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white transition-colors">
+                        Adicionar
+                    </button>
+                </article>
+            `).join('');
+        }
+
+        // MODAL LOGIC
+        function openProduct(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            const modal = document.getElementById('product-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <div class="rounded-2xl overflow-hidden shadow-2xl">
+                    <img src="${p.img}" class="w-full aspect-square object-cover">
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="text-blue-600 font-bold mb-2 uppercase tracking-widest text-sm">Hardware Premium</span>
+                    <h2 class="text-4xl font-black mb-4">${p.name}</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">Alta durabilidade e design ergonômico. Ideal para quem busca performance competitiva e estética moderna.</p>
+                    <ul class="space-y-2 mb-8 text-sm">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> ${p.specs}</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-green-500"></i> Garantia de 12 meses</li>
+                    </ul>
+                    <div class="flex items-center gap-6">
+                        <span class="text-3xl font-black">R$ ${p.price.toFixed(2)}</span>
+                        <button onclick="addToCart(${p.id}); closeModal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-500/30">
+                            Comprar Agora
+                        </button>
+                    </div>
+                </div>
+            `;
+            modal.classList.add('modal-active');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').classList.remove('modal-active');
+        }
+
+        // CART LOGIC
+        function toggleCart(show) {
+            const drawer = document.getElementById('cart-drawer');
+            if(show) {
+                drawer.classList.remove('invisible');
+                drawer.children[1].classList.add('drawer-open');
+            } else {
+                drawer.children[1].classList.remove('drawer-open');
+                setTimeout(() => drawer.classList.add('invisible'), 300);
+            }
+        }
+
+        function addToCart(id) {
+            const item = PRODUCTS.find(p => p.id === id);
+            const exists = cart.find(c => c.id === id);
+            
+            if(exists) {
+                exists.qty++;
+            } else {
+                cart.push({...item, qty: 1});
+            }
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        function updateCartUI() {
+            localStorage.setItem('techstore-cart', JSON.stringify(cart));
+            const container = document.getElementById('cart-items');
+            const count = document.getElementById('cart-count');
+            const totalDisplay = document.getElementById('cart-total-value');
+            
+            let total = 0;
+            let itemsCount = 0;
+
+            container.innerHTML = cart.map(item => {
+                total += item.price * item.qty;
+                itemsCount += item.qty;
+                return `
+                <div class="flex gap-4 items-center">
+                    <img src="${item.img}" class="w-16 h-16 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm">${item.name}</h4>
+                        <span class="text-blue-600 text-xs">R$ ${item.price.toFixed(2)}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center">-</button>
+                        <span class="text-sm font-bold">${item.qty}</span>
+                        <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center">+</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            count.innerText = itemsCount;
+            totalDisplay.innerText = `R$ ${total.toFixed(2)}`;
+            
+            // Update Checkout
+            document.getElementById('checkout-total').innerText = `R$ ${total.toFixed(2)}`;
+            document.getElementById('checkout-summary').innerHTML = cart.map(i => `
+                <div class="flex justify-between text-sm">
+                    <span>${i.qty}x ${i.name}</span>
+                    <span class="font-medium">R$ ${(i.price * i.qty).toFixed(2)}</span>
+                </div>
+            `).join('');
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            item.qty += delta;
+            if(item.qty < 1) cart = cart.filter(c => c.id !== id);
+            updateCartUI();
+        }
+
+        // CHECKOUT & PAYMENT SIMULATION
+        function goToCheckout() {
+            if(cart.length === 0) return alert("Seu carrinho está vazio!");
+            toggleCart(false);
+            showSection('checkout');
+        }
+
+        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const orderNum = Math.floor(Math.random() * 900000) + 100000;
+            const method = document.querySelector('input[name="payment"]:checked').value;
+            
+            alert(`✅ Sucesso! Pedido #${orderNum} realizado via ${method.toUpperCase()}. Verifique seu e-mail para acompanhar a entrega.`);
+            
+            cart = [];
+            updateCartUI();
+            showSection('home');
+        });
+
+        // THEME TOGGLE
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if(html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.setAttribute('data-lucide', 'moon');
+            } else {
+                html.classList.add('dark');
+                icon.setAttribute('data-lucide', 'sun');
+            }
+            lucide.createIcons();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
