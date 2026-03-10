@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeNextOn | Gestão de Projetos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus+Jakarta+Sans', sans-serif; }
+        .loader { border-top-color: #3b82f6; animation: spinner 0.6s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="layers" class="text-blue-600"></i> CodeNextOn Admin
+                </h1>
+                <p class="text-slate-500 text-sm">Controle de clientes e cronograma de produção</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="fetchData()" class="p-3 text-slate-400 hover:text-blue-600 transition">
+                    <i data-lucide="refresh-cw" id="refresh-icon"></i>
+                </button>
+                <button onclick="openModalForCreate()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition flex items-center gap-2 shadow-lg shadow-blue-200">
+                    <i data-lucide="plus" class="w-5"></i> Novo Cliente
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100">
+                                <th class="p-4 font-semibold text-slate-600 text-sm">CLIENTE</th>
+                                <th class="p-4 font-semibold text-slate-600 text-sm">PROJETO</th>
+                                <th class="p-4 font-semibold text-slate-600 text-sm">STATUS (Clique p/ editar)</th>
+                                <th class="p-4 font-semibold text-slate-600 text-sm text-center">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-50 text-sm"></tbody>
+                    </table>
+                </div>
+                <div id="loading-state" class="p-20 flex flex-col items-center justify-center text-slate-400">
+                    <div class="loader w-10 h-10 border-4 border-slate-200 rounded-full mb-4"></div>
+                    <p>Sincronizando com Google Sheets...</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <i data-lucide="clock" class="w-5 text-blue-500"></i> Linha do Tempo
+                    </h3>
+                    <div id="timeline-body" class="space-y-6 relative before:absolute before:inset-0 before:ml-2.5 before:h-full before:w-0.5 before:bg-slate-100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-8 scale-95 transition-all">
+            <h2 id="modal-title" class="text-xl font-bold mb-6 text-slate-800">Cadastrar Projeto</h2>
+            <form id="client-form" class="space-y-4">
+                <input type="hidden" id="edit-id"> <label class="block text-xs font-bold text-slate-400 uppercase">Nome do Cliente</label>
+                <input type="text" id="nome" placeholder="Nome do Cliente / Empresa" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                
+                <label class="block text-xs font-bold text-slate-400 uppercase">Tipo de Serviço</label>
+                <input type="text" id="projeto" placeholder="Tipo de Projeto (ex: E-commerce)" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                
+                <label class="block text-xs font-bold text-slate-400 uppercase">Status Atual</label>
+                <select id="status" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="Prospecção">Prospecção</option>
+                    <option value="Em Desenvolvimento">Em Desenvolvimento</option>
+                    <option value="Aguardando Feedback">Aguardando Feedback</option>
+                    <option value="Finalizado">Finalizado / Entregue</option>
+                </select>
+                
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeModal()" class="flex-1 py-3 text-slate-500 font-semibold hover:bg-slate-50 rounded-xl transition">Cancelar</button>
+                    <button type="submit" id="submit-btn" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-100">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxFLEmH1IfHTcCUsp7H33Nux72MJTbhi_KFbKoX8Dso9IUo0TpdIB1Y2q3qj7IQX1pA/exec';
+        let currentData = [];
+
+        lucide.createIcons();
+
+        function openModalForCreate() {
+            document.getElementById('modal-title').innerText = "Cadastrar Projeto";
+            document.getElementById('edit-id').value = "";
+            document.getElementById('client-form').reset();
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function openModalForEdit(id) {
+            const item = currentData.find(i => i.ID === id);
+            if (!item) return;
+
+            document.getElementById('modal-title').innerText = "Editar Projeto";
+            document.getElementById('edit-id').value = item.ID;
+            document.getElementById('nome').value = item.Nome;
+            document.getElementById('projeto').value = item.Projeto;
+            document.getElementById('status').value = item.Status;
+            
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        async function fetchData() {
+            const tbody = document.getElementById('table-body');
+            const timeline = document.getElementById('timeline-body');
+            const loading = document.getElementById('loading-state');
+            const refreshIcon = document.getElementById('refresh-icon');
+
+            refreshIcon.classList.add('animate-spin');
+            
+            try {
+                const response = await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: 'read' }) 
+                });
+                currentData = await response.json();
+                
+                tbody.innerHTML = '';
+                timeline.innerHTML = '';
+                loading.classList.add('hidden');
+
+                if (currentData.length === 0) {
+                    loading.classList.remove('hidden');
+                    loading.innerHTML = "<p>Nenhum projeto encontrado.</p>";
+                }
+
+                currentData.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition group">
+                            <td class="p-4 font-bold text-slate-800">${item.Nome}</td>
+                            <td class="p-4 text-slate-500">${item.Projeto}</td>
+                            <td class="p-4">
+                                <button onclick="openModalForEdit('${item.ID}')" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase transition hover:scale-105 ${getStatusStyle(item.Status)}">
+                                    ${item.Status}
+                                </button>
+                            </td>
+                            <td class="p-4 text-center">
+                                <button onclick="deleteItem('${item.ID}')" class="p-2 text-slate-300 hover:text-red-500 transition">
+                                    <i data-lucide="trash-2" class="w-4"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+
+                    timeline.innerHTML += `
+                        <div class="relative pl-8">
+                            <div class="absolute left-0 top-1 w-5 h-5 bg-white border-2 border-blue-500 rounded-full z-10"></div>
+                            <p class="text-sm font-bold text-slate-800 leading-none">${item.Nome}</p>
+                            <p class="text-xs text-slate-400 mt-1">${item.Projeto} • <span class="text-blue-500 font-semibold">${item.Status}</span></p>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error("Erro na leitura:", error);
+            } finally {
+                refreshIcon.classList.remove('animate-spin');
+            }
+        }
+
+        function getStatusStyle(status) {
+            switch(status) {
+                case 'Finalizado': return 'bg-green-100 text-green-700 ring-1 ring-green-200';
+                case 'Em Desenvolvimento': return 'bg-blue-100 text-blue-700 ring-1 ring-blue-200';
+                case 'Prospecção': return 'bg-orange-100 text-orange-700 ring-1 ring-orange-200';
+                case 'Aguardando Feedback': return 'bg-purple-100 text-purple-700 ring-1 ring-purple-200';
+                default: return 'bg-slate-100 text-slate-600';
+            }
+        }
+
+        document.getElementById('client-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const editId = document.getElementById('edit-id').value;
+            
+            btn.disabled = true;
+            btn.innerHTML = "Processando...";
+
+            const payload = {
+                id: editId || null,
+                Nome: document.getElementById('nome').value,
+                Projeto: document.getElementById('projeto').value,
+                Status: document.getElementById('status').value
+            };
+
+            const action = editId ? 'update' : 'create';
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: action, payload: payload })
+                });
+                
+                closeModal();
+                await fetchData();
+            } catch (err) {
+                alert("Erro ao processar solicitação.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Salvar Alterações";
+            }
+        });
+
+        async function deleteItem(id) {
+            if (!confirm("Deseja realmente excluir este registro?")) return;
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'delete', payload: { id: id } })
+                });
+                await fetchData();
+            } catch (err) {
+                alert("Erro ao deletar.");
+            }
+        }
+
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
