@@ -24,7 +24,7 @@ body{
   line-height:1.6;
   overflow-x:hidden;
   scroll-behavior:smooth;
-  padding-top:80px; /* espaço para nav fixa */
+  padding-top:80px;
 }
 
 /* NAV */
@@ -153,36 +153,37 @@ footer{padding:50px 10%;background:#05080d;border-top:1px solid rgba(255,255,255
 
 /* CARROSSEL */
 .portfolio-carousel{padding:100px 10%;overflow:hidden;}
-.carousel-container{position:relative;max-width:1100px;margin:auto;}
+.carousel-container{position:relative;max-width:1100px;margin:auto;overflow:hidden;}
 .carousel-track{display:flex;transition:transform 0.5s ease;}
-.carousel-item{min-width:100%;padding:10px;}
+.carousel-item{flex:0 0 calc(100% / 3);padding:10px;}
 .carousel-item img{width:100%;border-radius:20px;object-fit:cover;height:450px;border:1px solid rgba(255,255,255,0.05);}
-.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:none;color:white;font-size:28px;width:50px;height:50px;border-radius:50%;cursor:pointer;backdrop-filter:blur(5px);transition:0.3s;}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:none;color:white;font-size:28px;width:50px;height:50px;border-radius:50%;cursor:pointer;backdrop-filter:blur(5px);transition:0.3s;z-index:10;}
 .carousel-btn:hover{background:var(--primary);}
 .prev{left:-20px;}
 .next{right:-20px;}
 
 /* MOBILE */
 @media(max-width:768px){
-body{padding-top:70px;}
-section{padding:60px 5%;}
-.hero-content h1{font-size:2.5rem;}
-.menu-toggle{display:block;}
-.nav-right{position:absolute;top:70px;right:0;background:var(--card-bg);width:200px;flex-direction:column;align-items:center;padding:20px;gap:15px;border-radius:10px 0 0 10px;transform:translateX(100%);transition:0.3s;}
-.nav-right.active{transform:translateX(0);}
-.carousel-item img{height:260px;}
-.prev{left:5px;}
-.next{right:5px;}
-.stats{flex-direction:column;gap:20px;}
-.comentarios-list{grid-template-columns:1fr;}
-.testimonial-form input,
-.testimonial-form textarea{max-width:100%;}
-.testimonial-form button{max-width:100%;}
+  body{padding-top:70px;}
+  section{padding:60px 5%;}
+  .hero-content h1{font-size:2.5rem;}
+  .menu-toggle{display:block;}
+  .nav-right{position:absolute;top:70px;right:0;background:var(--card-bg);width:200px;flex-direction:column;align-items:center;padding:20px;gap:15px;border-radius:10px 0 0 10px;transform:translateX(100%);transition:0.3s;}
+  .nav-right.active{transform:translateX(0);}
+  .carousel-item{flex:0 0 100%;}
+  .prev{left:5px;}
+  .next{right:5px;}
+  .carousel-item img{height:260px;}
+  .stats{flex-direction:column;gap:20px;}
+  .comentarios-list{grid-template-columns:1fr;}
+  .testimonial-form input,
+  .testimonial-form textarea{max-width:100%;}
+  .testimonial-form button{max-width:100%;}
 }
 </style>
 </head>
 <body>
-<!-- Resto do HTML continua igual, incluindo nav, hero, serviços, carousel, comentários, footer -->
+
 <a href="#" class="whatsapp-float btn-whats-random">
   <img src="https://img.icons8.com/color/40/ffffff/whatsapp.png">
 </a>
@@ -236,7 +237,6 @@ section{padding:60px 5%;}
   </div>
 </section>
 
-
 <section class="stats reveal">
   <div class="stat"><h3>50+</h3><p>Clientes Atendidos</p></div>
   <div class="stat"><h3>120+</h3><p>Projetos Concluídos</p></div>
@@ -252,7 +252,7 @@ section{padding:60px 5%;}
 <section class="testimonials reveal" id="comentarios">
   <div class="section-title">
     <h2>Comentários dos <span>Visitantes</span></h2>
-    <p>Deixe seu feedback.</p>
+    <p>Deixe seu feedback sobre nosso site.</p>
   </div>
 
   <div class="testimonial-form">
@@ -305,16 +305,61 @@ window.open(url,"_blank");
 });
 })();
 
-/* CARROSSEL */
+/* CARROSSEL LOOP INFINITO 3 POR VEZ */
 const track = document.querySelector(".carousel-track");
-const slides = document.querySelectorAll(".carousel-item");
+let slides = Array.from(document.querySelectorAll(".carousel-item"));
 const nextBtn = document.querySelector(".next");
 const prevBtn = document.querySelector(".prev");
+const slidesToShow = 3;
+
 let index = 0;
-function updateCarousel(){track.style.transform = `translateX(-${index * 100}%)`;}
-nextBtn.addEventListener("click",()=>{index++;if(index >= slides.length){index=0;}updateCarousel();});
-prevBtn.addEventListener("click",()=>{index--;if(index<0){index=slides.length-1;}updateCarousel();});
-setInterval(()=>{index++;if(index>=slides.length){index=0;}updateCarousel();},4000);
+const totalSlides = slides.length;
+
+// duplicar slides para loop infinito
+slides.forEach(slide => track.appendChild(slide.cloneNode(true)));
+slides = Array.from(document.querySelectorAll(".carousel-item"));
+
+function updateCarousel(){
+  const slideWidth = slides[0].getBoundingClientRect().width;
+  track.style.transform = `translateX(-${index * slideWidth}px)`;
+}
+
+nextBtn.addEventListener("click", ()=>{
+  index++;
+  if(index > totalSlides){
+    index = 0;
+    track.style.transition = 'none';
+    updateCarousel();
+    setTimeout(()=>{track.style.transition='transform 0.5s ease'; index=1; updateCarousel();},50);
+  } else {
+    updateCarousel();
+  }
+});
+
+prevBtn.addEventListener("click", ()=>{
+  index--;
+  if(index < 0){
+    index = totalSlides;
+    track.style.transition = 'none';
+    updateCarousel();
+    setTimeout(()=>{track.style.transition='transform 0.5s ease'; index=totalSlides-1; updateCarousel();},50);
+  } else {
+    updateCarousel();
+  }
+});
+
+// autoplay
+setInterval(()=>{
+  index++;
+  if(index > totalSlides){
+    index = 0;
+    track.style.transition = 'none';
+    updateCarousel();
+    setTimeout(()=>{track.style.transition='transform 0.5s ease'; index=1; updateCarousel();},50);
+  } else {
+    updateCarousel();
+  }
+},4000);
 
 /* COMENTÁRIOS COM PAGINAÇÃO */
 const SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbydh17Z_Wrr6dEWQR921x6Y6nr6cHeMd2r_4QXzHHlwH4eL-ioTpbscyfBsjxhZO0U/exec";
@@ -395,5 +440,4 @@ async function carregarComentarios(){
 document.addEventListener("DOMContentLoaded", carregarComentarios);
 </script>
 </body>
-
 </html>
