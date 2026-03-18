@@ -48,7 +48,7 @@ button {
 
 <script>
 
-// GERA NÚMERO MAIS REALISTA
+// GERAR NÚMERO
 function gerarNumero() {
     let numero = "55119";
 
@@ -59,31 +59,20 @@ function gerarNumero() {
         numero += Math.floor(Math.random() * 10);
     }
 
-    // evita números repetidos tipo 000000
-    if (/(\d)\1{4,}/.test(numero)) {
-        return gerarNumero();
-    }
-
     return numero;
 }
 
-// MENSAGEM INSTITUCIONAL
+// MENSAGEM
 function gerarMensagem() {
-    return `Bom dia, tudo bem?
-
-Somos a CodeNextOn, uma empresa especializada na criação de sites profissionais e sistemas personalizados.
-
-Ajudamos negócios a fortalecer sua presença online, aumentar a visibilidade e atrair mais clientes através da internet.
-
-Mesmo que não seja para agora, vale a pena conhecer nosso trabalho e entender como isso pode ajudar no futuro.
-
-Acesse nosso site:
-https://CodeNextOn.com.br
-
-Ficamos à disposição 😊`;
+    return "Bom dia, tudo bem?\n\n" +
+    "Somos a CodeNextOn, especializados na criação de sites profissionais e sistemas personalizados.\n\n" +
+    "Ajudamos empresas a aumentar sua presença online e atrair mais clientes.\n\n" +
+    "Conheça nosso trabalho:\n" +
+    "https://CodeNextOn.com.br\n\n" +
+    "Ficamos à disposição 😊";
 }
 
-// GERA LISTA
+// GERAR LISTA
 function gerarLista() {
     let lista = document.getElementById("lista");
     lista.innerHTML = "";
@@ -92,27 +81,24 @@ function gerarLista() {
         let numero = gerarNumero();
         let msg = gerarMensagem();
 
-        let link = https://wa.me/${numero}?text=${encodeURIComponent(msg)};
-        let check = https://wa.me/${numero};
+        let link = "https://wa.me/" + numero + "?text=" + encodeURIComponent(msg);
 
-        lista.innerHTML += `
-            <div class="card">
-                📞 ${numero}<br><br>
+        let div = document.createElement("div");
+        div.className = "card";
 
-                <a href="${link}" target="_blank">
-                    <button>Enviar Mensagem</button>
-                </a>
+        div.innerHTML = `
+            📞 ${numero}<br><br>
 
-                <a href="${check}" target="_blank">
-                    <button>Testar WhatsApp</button>
-                </a>
-            </div>
+            <a href="${link}" target="_blank">
+                <button>Enviar Mensagem</button>
+            </a>
         `;
+
+        lista.appendChild(div);
     }
 }
 
-// GERA AUTOMÁTICO AO ABRIR
-gerarLista();
+window.onload = gerarLista;
 
 </script>
 
