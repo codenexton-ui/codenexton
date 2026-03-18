@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeNextOn - Leads Automáticos</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #020617;
+    color: white;
+    padding: 20px;
+}
+.container {
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+}
+.card {
+    background: #0f172a;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+button {
+    padding: 10px 15px;
+    background: #22c55e;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🚀 CodeNextOn Leads</h1>
+    <p>Geração automática de contatos</p>
+
+    <button onclick="gerarLista()">🔄 Atualizar Números</button>
+
+    <div id="lista"></div>
+</div>
+
+<script>
+function gerarNumero() {
+    let numero = "55119";
+
+    for (let i = 0; i < 8; i++) {
+        numero += Math.floor(Math.random() * 10);
+    }
+
+    return numero;
+}
+
+function gerarMensagem() {
+    return `Bom dia, tudo bem?
+
+Somos a CodeNextOn, uma empresa especializada na criação de sites profissionais e sistemas personalizados.
+
+Atuamos ajudando negócios a fortalecer sua presença online, aumentar a visibilidade e atrair mais clientes através da internet.
+
+Mesmo que não seja para uso imediato, vale a pena conhecer nosso trabalho e entender como isso pode ajudar no futuro.
+
+Acesse nosso site:
+https://CodeNextOn.com.br
+
+Se quiser saber mais, estamos à disposição 😊`;
+}
+
+function gerarLista() {
+    let lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    for (let i = 0; i < 20; i++) {
+        let numero = gerarNumero();
+        let msg = gerarMensagem();
+        let link = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
+
+        lista.innerHTML += `
+            <div class="card">
+                📞 ${numero}<br><br>
+                <a href="${link}" target="_blank">
+                    <button>Chamar no WhatsApp</button>
+                </a>
+            </div>
+        `;
+    }
+}
+
+// gera automaticamente ao carregar
+gerarLista();
+</script>
+
+</body>
+</html>
