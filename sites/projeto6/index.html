@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eletricista Pro 24h | Especialista em São Paulo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --primary: #fbbf24;
+            --primary-hover: #f59e0b;
+            --success: #22c55e;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+
+        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+
+        /* HEADER & NAVIGATION */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+
+        nav { display: flex; align-items: center; gap: 2rem; }
+        nav a { color: var(--text-main); text-decoration: none; font-weight: 500; transition: var(--transition); font-size: 0.95rem; }
+        nav a:hover { color: var(--primary); }
+
+        .toggle { display: none; cursor: pointer; color: var(--primary); z-index: 1100; }
+
+        /* MOBILE MENU OVERLAY */
+        .mobile-nav {
+            position: fixed; top: 0; right: -100%; width: 80%; height: 100vh;
+            background: var(--bg-card); z-index: 1050; display: flex; flex-direction: column;
+            padding: 100px 40px; gap: 2rem; transition: var(--transition); box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+        .mobile-nav.active { right: 0; }
+        .mobile-nav a { font-size: 1.2rem; color: white; text-decoration: none; font-weight: 600; }
+
+        /* HERO */
+        .hero { padding: 120px 5% 100px; text-align: center; background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 60%); }
+        .hero h1 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; margin-bottom: 24px; letter-spacing: -1px; }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex; align-items: center; gap: 12px; background: var(--success);
+            padding: 18px 36px; border-radius: 12px; text-decoration: none; color: #fff;
+            font-weight: 700; transition: var(--transition); box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.4);
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(34, 197, 94, 0.5); }
+
+        /* SECTIONS GENERAL */
+        section { padding: 100px 5%; }
+        .section-title { text-align: center; font-size: 2.2rem; margin-bottom: 50px; font-weight: 800; }
+        .section-title span { color: var(--primary); }
+
+        /* ABOUT SECTION */
+        .about-container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .about-text h2 { font-size: 2rem; margin-bottom: 20px; }
+        .about-image { background: var(--bg-card); height: 350px; border-radius: 24px; border: 2px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .about-image::after { content: "FOTO DO ELETRICISTA"; color: var(--text-muted); font-weight: 600; }
+
+        /* SERVICES GRID */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: var(--bg-card); padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
+        .card:hover { border-color: var(--primary); transform: translateY(-8px); background: #243146; }
+        .card i { color: var(--primary); margin-bottom: 20px; width: 48px; height: 48px; }
+
+        /* TESTIMONIALS */
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .testimonial-card { background: rgba(255,255,255,0.03); padding: 30px; border-radius: 16px; font-style: italic; position: relative; }
+        .testimonial-card::before { content: "“"; font-size: 4rem; color: var(--primary); position: absolute; top: 10px; left: 20px; opacity: 0.3; }
+        .author { margin-top: 20px; display: block; font-style: normal; font-weight: 700; color: var(--primary); }
+
+        /* WHATSAPP FLOATING */
+        .whatsapp-float {
+            position: fixed; bottom: 30px; right: 30px; background: var(--success);
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+        .whatsapp-float:hover { transform: scale(1.1) rotate(10deg); }
+
+        footer { padding: 60px 5%; text-align: center; background: #020617; color: var(--text-muted); }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .about-container { grid-template-columns: 1fr; }
+            nav { display: none; }
+            .toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="https://wa.me/5511913234680" class="whatsapp-float" target="_blank">
+    <i data-lucide="message-circle" style="width: 32px; height: 32px;"></i>
+</a>
+
+<header>
+    <div class="logo"><i data-lucide="zap"></i> ELETRICISTA PRO</div>
+    <nav>
+        <a href="#inicio">Início</a>
+        <a href="#sobre">Sobre</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#precos">Preços</a>
+        <a href="https://wa.me/5511913234680" class="btn" style="padding: 10px 24px; font-size: 14px;">Chamar Agora</a>
+    </nav>
+    <div class="toggle" id="menuBtn"><i data-lucide="menu"></i></div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+    <a href="#inicio" onclick="closeMenu()">Início</a>
+    <a href="#sobre" onclick="closeMenu()">Sobre</a>
+    <a href="#servicos" onclick="closeMenu()">Serviços</a>
+    <a href="#precos" onclick="closeMenu()">Preços</a>
+    <a href="https://wa.me/5511913234680" class="btn">Falar no WhatsApp</a>
+</div>
+
+<section class="hero" id="inicio">
+    <h1>Energia com <span>Segurança</span> e Rapidez.</h1>
+    <p>Não fique no escuro. Especialista em manutenção, instalação e emergências elétricas 24h em toda a Grande São Paulo.</p>
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <a class="btn" href="https://wa.me/5511913234680" target="_blank">
+            <i data-lucide="phone"></i> Orçamento por WhatsApp
+        </a>
+    </div>
+</section>
+
+<section id="sobre">
+    <div class="about-container">
+        <div class="about-image"></div>
+        <div class="about-text">
+            <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Por que nos escolher?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Com mais de 10 anos de experiência, oferecemos soluções técnicas que seguem rigorosamente as normas de segurança (NR10). Nosso foco é resolver seu problema sem "gambiarras".</p>
+            <ul style="list-style: none; display: grid; gap: 10px;">
+                <li><i data-lucide="check-circle" style="color: var(--success); width: 18px; vertical-align: middle;"></i> Atendimento em até 40 min</li>
+                <li><i data-lucide="check-circle" style="color: var(--success); width: 18px; vertical-align: middle;"></i> Profissionais Certificados</li>
+                <li><i data-lucide="check-circle" style="color: var(--success); width: 18px; vertical-align: middle;"></i> Garantia em todos os serviços</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="servicos" style="background: #0b1120;">
+    <h2 class="section-title">Nossos <span>Serviços</span></h2>
+    <div class="services-grid">
+        <div class="card">
+            <i data-lucide="shield-check"></i>
+            <h3>Painéis Elétricos</h3>
+            <p>Montagem, manutenção e organização de quadros de disjuntores conforme normas vigentes.</p>
+        </div>
+        <div class="card">
+            <i data-lucide="lightbulb"></i>
+            <h3>Iluminação LED</h3>
+            <p>Projetos luminotécnicos, instalação de fitas LED, trilhos e lustres modernos.</p>
+        </div>
+        <div class="card">
+            <i data-lucide="alert-triangle"></i>
+            <h3>Curto-Circuito</h3>
+            <p>Diagnóstico preciso e reparo imediato em fiações superaquecidas ou com queda de fase.</p>
+        </div>
+    </div>
+</section>
+
+<section id="depoimentos">
+    <h2 class="section-title">Quem <span>Confia</span></h2>
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            "Atendimento impecável! O eletricista chegou rápido em pleno domingo e resolveu o curto no meu padrão."
+            <span class="author">Ricardo Silva - Pinheiros</span>
+        </div>
+        <div class="testimonial-card">
+            "Preço justo e serviço muito limpo. Instalaram todos os lustres do meu apartamento novo. Recomendo!"
+            <span class="author">Ana Beatriz - Morumbi</span>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+        <i data-lucide="zap"></i> ELETRICISTA PRO
+    </div>
+    <p>Atendimento 24 horas em São Paulo e ABC.</p>
+    <p style="margin-top: 20px; font-size: 0.8rem; opacity: 0.5;">© 2026 Todos os direitos reservados. Design by Gemini.</p>
+</footer>
+
+<script>
+    lucide.createIcons();
+
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    let isMenuOpen = false;
+
+    menuBtn.addEventListener('click', () => {
+        isMenuOpen = !isMenuOpen;
+        mobileNav.classList.toggle('active');
+        menuBtn.innerHTML = isMenuOpen ? '<i data-lucide="x"></i>' : '<i data-lucide="menu"></i>';
+        lucide.createIcons();
+    });
+
+    function closeMenu() {
+        mobileNav.classList.remove('active');
+        menuBtn.innerHTML = '<i data-lucide="menu"></i>';
+        lucide.createIcons();
+        isMenuOpen = false;
+    }
+</script>
+
+</body>
+</html>
