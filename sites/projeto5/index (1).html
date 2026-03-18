@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senza Pizzeria | Experiência Gastronômica Zero Glúten</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'senza-red': '#8B1A1E',
+                        'senza-gold': '#C5A059',
+                        'senza-dark': '#121212',
+                        'senza-cream': '#FAF7F2',
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        #mobile-menu {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .menu-open #mobile-menu {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(18,18,18,0.3), rgba(18,18,18,0.8));
+        }
+        .menu-open { overflow: hidden; }
+        
+        /* Ajuste para garantir que a imagem preencha o espaço */
+        .pizza-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="bg-senza-cream text-senza-dark font-sans">
+
+    <header class="fixed top-0 w-full z-50 bg-white shadow-sm border-b border-gray-100">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2 z-50">
+                <span class="font-serif text-2xl md:text-3xl font-bold tracking-tight">SENZA</span>
+            </a>
+            
+            <div class="flex items-center space-x-4">
+                <a href="https://wa.me/5511911464722" class="bg-senza-red text-white px-5 py-2 text-[11px] font-bold tracking-widest rounded-sm uppercase shadow-lg active:scale-95 transition">
+                    PEDIR
+                </a>
+                
+                <button id="menu-toggle" class="text-senza-dark p-2 z-50 flex flex-col justify-center items-center gap-1.5" aria-label="Menu">
+                    <span class="w-6 h-0.5 bg-senza-dark transition-all duration-300" id="line1"></span>
+                    <span class="w-6 h-0.5 bg-senza-dark transition-all duration-300" id="line2"></span>
+                </button>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="fixed inset-0 w-full h-screen bg-senza-dark text-white z-40 flex flex-col items-center justify-center space-y-10 translate-x-full">
+            <a href="#sobre" onclick="toggleMenu()" class="font-serif text-4xl hover:text-senza-gold transition italic">A Senza</a>
+            <a href="#cardapio" onclick="toggleMenu()" class="font-serif text-4xl hover:text-senza-gold transition italic">Cardápio</a>
+            <a href="#unidades" onclick="toggleMenu()" class="font-serif text-4xl hover:text-senza-gold transition italic">Unidade</a>
+            <div class="pt-6">
+                <a href="https://wa.me/5511911464722" class="border-2 border-senza-gold text-senza-gold px-10 py-4 text-xs font-bold tracking-[0.3em] uppercase">WhatsApp</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative h-[85vh] flex items-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.pexels.com/photos/1166120/pexels-photo-1166120.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="w-full h-full object-cover" alt="Senza Pizza">
+            <div class="absolute inset-0 hero-gradient"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10 text-white pt-20">
+            <span class="text-senza-gold font-bold tracking-[0.4em] text-[10px] uppercase block mb-4">Senzatinalmente Original</span>
+            <h1 class="font-serif text-5xl md:text-8xl mb-8 leading-[1.1]">Pizzas 100%<br><i class="text-senza-gold italic font-light">Sem Glúten.</i></h1>
+            <a href="#cardapio" class="inline-block bg-white text-senza-dark px-8 py-4 font-bold tracking-widest text-[10px] uppercase shadow-2xl">Ver Menu</a>
+        </div>
+    </section>
+
+    <section id="cardapio" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-senza-red font-bold tracking-[0.2em] text-[10px] uppercase block mb-2">Destaques da Semana</span>
+                <h2 class="font-serif text-4xl italic inline-block border-b border-senza-gold pb-2">Favoritas da Casa</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12">
+                
+                <div class="text-left group">
+                    <div class="overflow-hidden mb-6 rounded-sm aspect-square bg-gray-50 border border-gray-100">
+                        <img src="https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg?auto=compress&cs=tinysrgb&w=600" class="pizza-img transition duration-700 group-hover:scale-105" alt="Margherita">
+                    </div>
+                    <div class="flex justify-between items-baseline mb-2">
+                        <h4 class="font-serif text-2xl italic tracking-tighter uppercase">Margherita Prime</h4>
+                        <span class="font-bold text-senza-gold text-lg">R$ 72</span>
+                    </div>
+                    <p class="text-[13px] text-gray-400 font-light leading-relaxed">Massa Senza crocante, molho de tomate pelado italiano, mozzarella de búfala e manjericão fresco.</p>
+                </div>
+
+                <div class="text-left group">
+                    <div class="overflow-hidden mb-6 rounded-sm aspect-square bg-gray-50 border border-gray-100">
+                        <img src="https://images.pexels.com/photos/4109128/pexels-photo-4109128.jpeg?auto=compress&cs=tinysrgb&w=600" class="pizza-img transition duration-700 group-hover:scale-105" alt="Pepperoni">
+                    </div>
+                    <div class="flex justify-between items-baseline mb-2">
+                        <h4 class="font-serif text-2xl italic tracking-tighter uppercase">Pepperoni Spec.</h4>
+                        <span class="font-bold text-senza-gold text-lg">R$ 84</span>
+                    </div>
+                    <p class="text-[13px] text-gray-400 font-light leading-relaxed">Mozzarella premium, fatias generosas de pepperoni artesanal e um toque secreto de orégano.</p>
+                </div>
+
+                <div class="text-left group">
+                    <div class="overflow-hidden mb-6 rounded-sm aspect-square bg-gray-50 border border-gray-100">
+                        <img src="https://images.pexels.com/photos/2619967/pexels-photo-2619967.jpeg?auto=compress&cs=tinysrgb&w=600" class="pizza-img transition duration-700 group-hover:scale-105" alt="Brie">
+                    </div>
+                    <div class="flex justify-between items-baseline mb-2">
+                        <h4 class="font-serif text-2xl italic tracking-tighter uppercase">Brie & Mel</h4>
+                        <span class="font-bold text-senza-gold text-lg">R$ 79</span>
+                    </div>
+                    <p class="text-[13px] text-gray-400 font-light leading-relaxed">Queijo brie francês derretido, mel trufado e amêndoas laminadas sobre nossa massa sem glúten.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-16 bg-senza-dark text-white text-center">
+        <p class="font-serif text-2xl italic mb-4">Senza Pizzeria SP</p>
+        <p class="text-[10px] tracking-[0.3em] text-gray-500 uppercase">100% Zero Glúten • 100% Sabor</p>
+        <div class="mt-10 flex justify-center space-x-8">
+             <a href="https://instagram.com/senza.pizzeria.sp" class="text-[10px] font-bold tracking-widest border-b border-senza-gold">INSTAGRAM</a>
+             <a href="https://wa.me/5511911464722" class="text-[10px] font-bold tracking-widest border-b border-senza-gold">PEDIR AGORA</a>
+        </div>
+    </footer>
+
+    <script>
+        const btn = document.getElementById('menu-toggle');
+        const body = document.body;
+        const line1 = document.getElementById('line1');
+        const line2 = document.getElementById('line2');
+
+        function toggleMenu() {
+            body.classList.toggle('menu-open');
+            
+            if (body.classList.contains('menu-open')) {
+                line1.style.transform = 'translateY(4px) rotate(45deg)';
+                line2.style.transform = 'translateY(-4px) rotate(-45deg)';
+            } else {
+                line1.style.transform = 'none';
+                line2.style.transform = 'none';
+            }
+        }
+
+        btn.addEventListener('click', toggleMenu);
+    </script>
+
+</body>
+</html>
